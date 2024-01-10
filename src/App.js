@@ -1,23 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import TimerDisplay from './components/TimerDisplay/TimerDisplay.js';
+import ControlButtons from './components/ControlButtons/ControlButtons.js';
+import './App.scss';
 
 function App() {
+  const [time, setTime] = useState(0);
+  const [timerOn, setTimerOn] = useState(false);
+
+  useEffect(() => {
+    let interval = null;
+
+    if (timerOn) {
+      interval = setInterval(() => {
+        setTime(prevTime => prevTime + 1);
+      }, 1);
+    } else {
+      clearInterval(interval);
+    }
+
+    return () => clearInterval(interval);
+  }, [timerOn]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <TimerDisplay time={time} />
+      <ControlButtons
+        timerOn={timerOn}
+        start={() => setTimerOn(true)}
+        stop={() => setTimerOn(false)}
+        reset={() => setTime(0)}
+      />
     </div>
   );
 }
